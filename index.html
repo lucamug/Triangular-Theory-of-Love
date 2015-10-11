@@ -1,0 +1,36 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>Triangular theory of love - Javascript Component by Luca Mugnaini</title>
+	<meta name="description" content="The HTML5 Herald">
+	<meta name="author" content="SitePoint">
+
+	<!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
+
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<div>
+		<h2>Passion</h2>
+		<input type="range" id="passion-slider" value="0" min="0" max="100" step="1" oninput="triangularTheoryOfLove.onSliderUpdates({passion: this.value})" />
+	</div>
+	<div>
+		<h2>Intimacy</h2>
+		<input type="range" id="intimacy-slider" value="0" min="0" max="100" step="1" oninput="triangularTheoryOfLove.onSliderUpdates({intimacy: this.value})" />
+	</div>
+	<div>
+		<h2>Commitment</h2>
+		<input type="range" id="commitment-slider" value="0" min="0" max="100" step="1" oninput="triangularTheoryOfLove.onSliderUpdates({commitment: this.value})" />
+	</div>
+		<span id="passion_text">0</span>
+		<span id="intimacy_text">0</span>
+		<span id="commitment_text">0</span>
+	<script src="js/scripts.js"></script>
+</body>
+</html>
