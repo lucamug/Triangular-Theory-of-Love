@@ -11,20 +11,22 @@ var triangularTheoryOfLove = (function (d) {
 		return function (values) {
 			if(typeof values !== 'undefined') {
 				// I should check if the range of number is between 1 and 100
-				if ((typeof values["passion"] !== 'undefined') && (/^\d+$/.test(values["passion"])) && (values["passion"] >= 0) && (values["passion"] <= 100)) {
+				if (validComponentValue(values["passion"])) {
 					passion = values["passion"];
 				}
-				if ((typeof values["intimacy"] !== 'undefined') && (/^\d+$/.test(values["intimacy"])) && (values["intimacy"] >= 0) && (values["intimacy"] <= 100)) {
+				if (validComponentValue(values["intimacy"])) {
 					intimacy = values["intimacy"];
 				}
-				if ((typeof values["commitment"] !== 'undefined') && (/^\d+$/.test(values["commitment"])) && (values["commitment"] >= 0) && (values["commitment"] <= 100)) {
+				if (validComponentValue(values["commitment"])) {
 					commitment = values["commitment"];
 				}
 			}
 			return {passion: passion, intimacy: intimacy, commitment: commitment};
 		};
 	})();
-
+	function validComponentValue (number) {
+		return ((typeof number !== 'undefined') && (/^\d+$/.test(number)) && (number >= 0) && (number <= 100));
+	}
 	function updateLoveComponentFromHash () {
 		console.log("Hash: " + JSON.stringify(window.location.hash));
 		if (window.location.hash !== 'undefined') {
@@ -71,7 +73,3 @@ var triangularTheoryOfLove = (function (d) {
         onSliderUpdates: onSliderUpdates
     };
 }(document));
-
-function myFunction(myValue, idname){
-  document.getElementById(idname).innerHTML = myValue;
-}
