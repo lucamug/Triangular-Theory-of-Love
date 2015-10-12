@@ -2,33 +2,130 @@
 
 <dom-module id="triangular-theory-of-love">
     <style>
-        h2 {
-            color: orange;
+        /* https://css-tricks.com/dont-overthink-it-grids/ */
+        *, *:after, *:before {
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+        }
+        [class*='col-'] {
+            float: left;
+        }
+        .col-2-3 {
+          width: 66.66%;
+        }
+        .col-1-3 {
+          width: 33.33%;
+        }
+        [class*='col-'] {
+          padding-right: 20px;
+        }
+        [class*='col-']:last-of-type {
+          padding-right: 0;
+        }
+        .grid:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+        .components {
+            color: #ff9000;
+        }
+        input {
+            width: 100%;
+        }
+        #ball {
+            width:50px;
+            height:50px;
+            border: 3px solid #eeeeee;
+            border-radius:50%;
+            position:fixed;
+            background-color: blue;
+        }
+        .passion {
+            color: #FF495F;
+        }
+        .intimacy {
+            color: #e5cd34;
+        }
+        .commitment {
+            color: #bb60c9;
+        }
+        div {
+            border: 0px solid red;
         }
     </style>
 
     <template>
-        <div>
-            <h2>Passion</h2>
-            <input type="range" id="passionSlider" name="passion" value="0" min="0" max="100" step="1" />
+       <div class="grid">
+            <div class="col-1-3 components passion">
+                Passion
+            </div>
+            <div class="col-2-3">
+                <input type="range" id="passionSlider" name="passion" value="0" min="0" max="100" step="1" />
+            </div>
         </div>
-        <div>
-            <h2>Intimacy</h2>
-            <input type="range" id="intimacySlider" name="intimacy" value="0" min="0" max="100" step="1" />
+       <div class="grid">
+            <div class="col-1-3 components intimacy">
+               Intimacy
+            </div>
+            <div class="col-2-3">
+                <input type="range" id="intimacySlider" name="intimacy" value="0" min="0" max="100" step="1" />
+            </div>
         </div>
-        <div>
-            <h2>Commitment</h2>
-            <input type="range" id="commitmentSlider" name="commitment" value="0" min="0" max="100" step="1" />
+       <div class="grid">
+            <div class="col-1-3 components commitment">
+              Commitment
+            </div>
+            <div class="col-2-3">
+                <input type="range" id="commitmentSlider" name="commitment" value="0" min="0" max="100" step="1" />
+            </div>
         </div>
         <span id="passionText">0</span>
         <span id="intimacyText">0</span>
         <span id="commitmentText">0</span>
+        <div>
+            <div id="ball"></div>
+            <img src="images/ttl.jpg" width="100%" />
+        </div>
     </template>
 
     <script>
+
+
+
         var ttl = (function (d, w) {
             "use strict";
             var domTemplate;
+
+
+
+            function startBall () {
+                var element = domTemplate.ball;
+                var angle = 0;
+                var x = 0;
+                var y = 0;
+                var w = (window.innerWidth - 50) / 2;
+                var h = (window.innerHeight - 50) / 2;
+
+                function ballCircle() {
+                    x = w + w * Math.cos(angle * Math.PI / 180);
+                    y = h + h * Math.sin(angle * Math.PI / 180);
+                    
+                    element.style.left = x + 'px';
+                    element.style.top = y + 'px';
+
+                    angle++;
+                    if (angle > 360) {
+                        angle = 0;
+                    }
+                    setTimeout(ballCircle,20);
+                }
+                // ballCircle();
+            };
+
+
+
             var updateLoveComponents = (function () {
                 // Closure - These values are only accesible from the following
                 // function, they are not global.
@@ -61,7 +158,7 @@
                     var values = w.location.hash.substring(1).split(",");
                     updateLoveComponents( {name: 'passion',    value: values[0]} );
                     updateLoveComponents( {name: 'intimacy',   value: values[1]} );
-                    updateLoveComponents( {name: 'commitment', value: values[2]} );
+                    return updateLoveComponents( {name: 'commitment', value: values[2]} );
                 }
             }
             function updateSliders (values) {
@@ -74,10 +171,20 @@
                 domTemplate.intimacyText.innerHTML   = values["intimacy"];
                 domTemplate.commitmentText.innerHTML = values["commitment"];
             }
+            function updateBall (values) {
+                var total = (parseInt(values["passion"]) + parseInt(values["intimacy"]) + parseInt(values["commitment"])) / 4;
+                var total2 = total * 6;
+                domTemplate.ball.style.width = total + "px";
+                domTemplate.ball.style.height = total + "px";
+                domTemplate.ball.style.left = total2 + "px";
+                domTemplate.ball.style.top = total2 + "px";
+                // console.log("Total: " + total + "px");
+            }
             function onSliderUpdates (t) {
-                updateLoveComponents({name: t.name, value: t.value});
-                updateHash(updateLoveComponents());
-                updateText(updateLoveComponents());
+                var loveComponents = updateLoveComponents({name: t.name, value: t.value});
+                updateHash(loveComponents);
+                updateText(loveComponents);
+                updateBall(loveComponents);
             }
             function addEventListeners () {
                 // Initialize the DOM adding events
@@ -88,9 +195,11 @@
             function onLoadingThePage (dT) {
                 domTemplate = dT;
                 addEventListeners();
-                updateLoveComponentFromHash();
-                updateSliders(updateLoveComponents());
-                updateText(updateLoveComponents());
+                var loveComponents = updateLoveComponentFromHash();
+                updateSliders(loveComponents);
+                updateText(loveComponents);
+                updateBall(loveComponents);
+                //startBall();
             }
             return {
                 // Exposing public methods (also for Unit Testing, in necessary)
