@@ -1,0 +1,111 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<dom-module id="triangular-theory-of-love">
+    <style>
+        h2 {
+            color: orange;
+        }
+    </style>
+
+    <template>
+        <div>
+            <h2>Passion</h2>
+            <input type="range" id="passionSlider" name="passion" value="0" min="0" max="100" step="1" />
+        </div>
+        <div>
+            <h2>Intimacy</h2>
+            <input type="range" id="intimacySlider" name="intimacy" value="0" min="0" max="100" step="1" />
+        </div>
+        <div>
+            <h2>Commitment</h2>
+            <input type="range" id="commitmentSlider" name="commitment" value="0" min="0" max="100" step="1" />
+        </div>
+        <span id="passionText">0</span>
+        <span id="intimacyText">0</span>
+        <span id="commitmentText">0</span>
+    </template>
+
+    <script>
+        var ttl = (function (d, w) {
+            "use strict";
+            var domTemplate;
+            var updateLoveComponents = (function () {
+                // Closure - These values are only accesible from the following
+                // function, they are not global.
+                var componentsValues = {passion: 0, intimacy: 0, commitment: 0};
+                console.log("Starting values: " + JSON.stringify(componentsValues));
+                return function (component) {
+                    if (   typeof(component) !== 'undefined' 
+                        && validComponentName(component['name'])
+                        && validComponentValue(component['value'])
+                    ) {
+                        // console.log("updateLoveComponents: " + JSON.stringify(component));
+                        componentsValues[component['name']] = component['value'];
+                    }
+                    return componentsValues;
+                };
+            })();
+            function validComponentName (v) {
+                var r = (typeof(v) !== 'undefined') && (/^passion|intimacy|commitment$/.test(v));
+                return r;
+            }
+            function validComponentValue (v) {
+                var r = (typeof(v) !== 'undefined') && (/^\d+$/.test(v)) && (v >= 0) && (v <= 100);
+                return r;
+            }
+            function updateHash (values) {
+                w.location.hash = '#' + values["passion"] + ',' + values["intimacy"] + ',' + values["commitment"]; 
+            }
+            function updateLoveComponentFromHash () {
+                if (w.location.hash !== 'undefined') {
+                    var values = w.location.hash.substring(1).split(",");
+                    updateLoveComponents( {name: 'passion',    value: values[0]} );
+                    updateLoveComponents( {name: 'intimacy',   value: values[1]} );
+                    updateLoveComponents( {name: 'commitment', value: values[2]} );
+                }
+            }
+            function updateSliders (values) {
+                domTemplate.passionSlider.value    = values["passion"];
+                domTemplate.intimacySlider.value   = values["intimacy"];
+                domTemplate.commitmentSlider.value = values["commitment"];
+            }
+            function updateText (values) {
+                domTemplate.passionText.innerHTML    = values["passion"];
+                domTemplate.intimacyText.innerHTML   = values["intimacy"];
+                domTemplate.commitmentText.innerHTML = values["commitment"];
+            }
+            function onSliderUpdates (t) {
+                updateLoveComponents({name: t.name, value: t.value});
+                updateHash(updateLoveComponents());
+                updateText(updateLoveComponents());
+            }
+            function addEventListeners () {
+                // Initialize the DOM adding events
+                domTemplate.passionSlider.addEventListener(   "input", function(){ onSliderUpdates(this) } );
+                domTemplate.intimacySlider.addEventListener(  "input", function(){ onSliderUpdates(this) } );
+                domTemplate.commitmentSlider.addEventListener("input", function(){ onSliderUpdates(this) } );
+            }
+            function onLoadingThePage (dT) {
+                domTemplate = dT;
+                addEventListeners();
+                updateLoveComponentFromHash();
+                updateSliders(updateLoveComponents());
+                updateText(updateLoveComponents());
+            }
+            return {
+                // Exposing public methods (also for Unit Testing, in necessary)
+               onLoadingThePage: onLoadingThePage
+            };
+        })(document, window);
+
+        Polymer({
+            is: "triangular-theory-of-love",
+            properties: {
+              event: String
+            },
+            ready: function() {
+                ttl.onLoadingThePage(this.$);
+            }
+        });
+    </script>
+</dom-module>
