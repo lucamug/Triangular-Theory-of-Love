@@ -111,15 +111,16 @@
             function drawCanvas (values) {
                 var canvas         = domTemplate.canvas,
                     ctx            = canvas.getContext('2d'),
-                    canvasX        = 1200,
-                    canvasY        = 1200,
-                    triangleEdge   = 1000,
+                    canvasX        = values['commitment'] * 12,
+                    canvasY        = values['commitment'] * 12,
+                    triangleEdge   = values['commitment'] * 10,
                     marginLeft     = (canvasX - triangleEdge) / 2,
                     marginRight    = canvasX - marginLeft,
                     triangleHeight = (Math.sqrt(3)/2) * triangleEdge,
                     marginTop      = (canvasY - triangleHeight) / 2,
                     marginBottom   = canvasY - marginTop,
-                    triangleTopX   = canvasX / 2
+                    triangleTopX   = canvasX / 2,
+                    fontSize       = values['commitment']
                 ;
                 var ball = {
                     x: values['passion'],
@@ -146,7 +147,7 @@
 
                         ctx.fillStyle = '#330';
                         ctx.shadowBlur = 0;
-                        ctx.font="26px Arial";
+                        ctx.font = fontSize + "px Arial";
                         ctx.fillText("Passion", marginLeft + 100, marginBottom - 60);
                         ctx.fillText("Commitment", marginRight - 100 - 130, marginBottom - 60);
                         ctx.fillText("Intimacy", triangleTopX - (100 / 2), marginTop + 160);
