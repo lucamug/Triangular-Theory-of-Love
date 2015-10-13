@@ -54,6 +54,14 @@
         div {
             border: 0px solid red;
         }
+        .canvas {
+            border: 0px solid red;
+        }
+        #canvas {
+            border: 0px solid green;
+            width: 100%;
+        }
+
     </style>
 
     <template>
@@ -84,11 +92,13 @@
         <span id="passionText">0</span>
         <span id="intimacyText">0</span>
         <span id="commitmentText">0</span>
-        <div>
+        <div class="canvas">
             <div id="ball"></div>
+            <canvas id="canvas" width="600" height="600"></canvas>
+        </div>
+        <div>
             <img src="images/ttl.jpg" width="100%" />
         </div>
-        <canvas id="canvas" width="600" height="300"></canvas>
     </template>
 
     <script>
@@ -102,36 +112,48 @@
 
 
 function drawCanvas () {
-    var canvas = domTemplate.canvas;
-    var ctx = canvas.getContext('2d');
-
+    var canvas         = domTemplate.canvas,
+        ctx            = canvas.getContext('2d'),
+        canvasX        = 600,
+        canvasY        = 600,
+        triangleEdge   = 500,
+        marginLeft     = (canvasX - triangleEdge) / 2,
+        marginRight    = canvasX - marginLeft,
+        triangleHeight = (Math.sqrt(3)/2) * triangleEdge,
+        marginTop      = (canvasY - triangleHeight) / 2,
+        marginBottom   = canvasY - marginTop,
+        triangleTopX   = canvasX / 2
+    ;
     var ball = {
-      x: 160,
-      y: 160,
-      radius: 25,
-      color: 'orange',
-      draw: function() {
+        x: 160,
+        y: 160,
+        radius: 25,
+        color: 'orange',
+        draw: function() {
 
-        ctx.beginPath();
-        ctx.moveTo(10,400);
-        ctx.lineTo(410,400);
-        ctx.lineTo(210,60);
-        ctx.fillStyle = '#aaf';
-        ctx.fill();
+            // Triangle
+            ctx.beginPath();
+            ctx.moveTo(marginLeft, marginBottom);
+            ctx.lineTo(marginRight, marginBottom);
+            ctx.lineTo(triangleTopX, marginTop);
+            ctx.fillStyle = '#aaf';
+            ctx.fill();
 
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = "black";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, true);
-        ctx.closePath();
-        ctx.fillStyle = this.color;
-        ctx.fill();
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "black";
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, true);
+            ctx.closePath();
+            ctx.fillStyle = this.color;
+            ctx.fill();
 
-        ctx.fillStyle = '#330';
-        ctx.shadowBlur = 0;
-        ctx.font="20px Arial";
-        ctx.fillText("Hello World!",150,180);
-
+            ctx.fillStyle = '#330';
+            ctx.shadowBlur = 0;
+            ctx.font="26px Arial";
+            ctx.fillText("Passion", marginLeft + 100, marginBottom - 60);
+            ctx.fillText("Commitment", marginRight - 100 - 130, marginBottom - 60);
+            ctx.fillText("Intimacy", triangleTopX - (100 / 2), marginTop + 160);
+            ctx.fillText("True Love", triangleTopX - (120 / 2), marginTop + 260);
       }
     };
     ball.draw();
