@@ -104,58 +104,58 @@
     <script>
 
 
-        var ttl = (function (d, w) {
+        ttl = (function (d, w) {
             "use strict";
             var domTemplate;
 
-            function drawCanvas (values) {
-                var canvas         = domTemplate.canvas,
-                    ctx            = canvas.getContext('2d'),
-                    canvasX        = values['commitment'] * 12,
-                    canvasY        = values['commitment'] * 12,
-                    triangleEdge   = values['commitment'] * 10,
-                    marginLeft     = (canvasX - triangleEdge) / 2,
-                    marginRight    = canvasX - marginLeft,
-                    triangleHeight = (Math.sqrt(3)/2) * triangleEdge,
-                    marginTop      = (canvasY - triangleHeight) / 2,
-                    marginBottom   = canvasY - marginTop,
-                    triangleTopX   = canvasX / 2,
-                    fontSize       = values['commitment']
-                ;
-                var ball = {
-                    x: values['passion'],
-                    y: values['intimacy'],
+            function drawCanvas (canvas, values) {
+                // Object literal declarations
+                var graph = {
+                    x:            values['passion'],
+                    y:            values['intimacy'],
+                    canvasX:      values['commitment'] * 12,
+                    canvasY:      values['commitment'] * 12,
+                    triangleEdge: values['commitment'] * 10,
+                    fontSize:     values['commitment'],
                     radius: 25,
-                    color: 'orange',
-                    draw: function() {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        // Triangle
-                        ctx.beginPath();
-                        ctx.moveTo(marginLeft, marginBottom);
-                        ctx.lineTo(marginRight, marginBottom);
-                        ctx.lineTo(triangleTopX, marginTop);
-                        ctx.fillStyle = '#aaf';
-                        ctx.fill();
-
-                        ctx.shadowBlur = 10;
-                        ctx.shadowColor = "black";
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, true);
-                        ctx.closePath();
-                        ctx.fillStyle = this.color;
-                        ctx.fill();
-
-                        ctx.fillStyle = '#330';
-                        ctx.shadowBlur = 0;
-                        ctx.font = fontSize + "px Arial";
-                        ctx.fillText("Passion", marginLeft + 100, marginBottom - 60);
-                        ctx.fillText("Commitment", marginRight - 100 - 130, marginBottom - 60);
-                        ctx.fillText("Intimacy", triangleTopX - (100 / 2), marginTop + 160);
-                        ctx.fillText("True Love", triangleTopX - (120 / 2), marginTop + 260);
-                  }
+                    color:  'orange'
                 };
-                ball.draw();
-            }
+                graph.marginLeft     = (graph.canvasX - graph.triangleEdge) / 2;
+                graph.marginRight    = graph.canvasX - graph.marginLeft;
+                graph.triangleHeight = (Math.sqrt(3)/2) * graph.triangleEdge;
+                graph.marginTop      = (graph.canvasY - graph.triangleHeight) / 2;
+                graph.marginBottom   = graph.canvasY - graph.marginTop;
+                graph.triangleTopX   = graph.canvasX / 2;
+                graph.draw = function() {
+                    var ctx = canvas.getContext('2d');
+                    // console.log(this.x);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    // Triangle
+                    ctx.beginPath();
+                    ctx.moveTo(this.marginLeft, this.marginBottom);
+                    ctx.lineTo(this.marginRight, this.marginBottom);
+                    ctx.lineTo(this.triangleTopX, this.marginTop);
+                    ctx.fillStyle = '#aaf';
+                    ctx.fill();
+
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = "black";
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, true);
+                    ctx.closePath();
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+
+                    ctx.fillStyle = '#330';
+                    ctx.shadowBlur = 0;
+                    ctx.font = this.fontSize + "px Arial";
+                    ctx.fillText("Passion", this.marginLeft + 100, this.marginBottom - 60);
+                    ctx.fillText("Commitment", this.marginRight - 100 - 130, this.marginBottom - 60);
+                    ctx.fillText("Intimacy", this.triangleTopX - (100 / 2), this.marginTop + 160);
+                    ctx.fillText("True Love", this.triangleTopX - (120 / 2), this.marginTop + 260);
+                };
+                graph.draw();
+            };
 
             function startBall () {
                 var element = domTemplate.ball;
@@ -240,7 +240,7 @@
                 updateHash(loveComponents);
                 updateText(loveComponents);
                 updateBall(loveComponents);
-                drawCanvas(loveComponents);
+                drawCanvas(domTemplate.canvas, loveComponents);
             }
             function addEventListeners () {
                 // Initialize the DOM adding events
